@@ -41,7 +41,7 @@ export const Suggestions: Command = {
             )}`,
             flags: [64],
         });
-        await interaction.reply("I've sent you a DM.");
+        await interaction.followUp("I've sent you a DM.");
     },
 };
 
