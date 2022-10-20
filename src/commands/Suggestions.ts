@@ -16,6 +16,10 @@ export const Suggestions: Command = {
         const ownerRole = interaction.memberPermissions?.has(
             PermissionsBitField.Flags.Administrator
         );
+        if (!interaction.guild?.id) {
+            await interaction.followUp({ content: 'An error has occurred' });
+            return;
+        }
         if (!ownerRole) {
             await interaction.user.send({
                 content: "You don't have permissions to this command",
@@ -23,7 +27,7 @@ export const Suggestions: Command = {
             await interaction.deleteReply();
             return;
         }
-        const suggestions = await getSuggestions(interaction.guildId!);
+        const suggestions = await getSuggestions(interaction.guild.id);
         if (!suggestions) {
             await interaction.followUp({
                 content: 'An error has occurred',
