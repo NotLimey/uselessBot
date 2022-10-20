@@ -4,6 +4,7 @@ import ready from "./ready";
 import interactionCreate from "./interactionCreate";
 dotenv.config();
 
+console.clear();
 console.log("Bot is starting...");
 
 const client = new Client({
