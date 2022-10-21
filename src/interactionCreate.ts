@@ -27,16 +27,14 @@ export default (client: Client): void => {
 const handleSlashCommand = async (client: Client, interaction: CommandInteraction): Promise<void> => {
     const slashCommand = Commands.find(c => c.name === interaction.commandName);
     if (!slashCommand) {
-        interaction.followUp({ content: "An error has occurred" });
+        interaction.reply({ content: "An error has occurred", ephemeral: true });
         return;
     }
-
-    await interaction.deferReply();
 
     try {
         slashCommand.run(client, interaction);
     } catch (e) {
         console.log(e);
-        interaction.followUp({ content: "An error has occurred" });
+        interaction.reply({ content: "An error has occurred", ephemeral: true });
     }
 }; 

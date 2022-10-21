@@ -16,7 +16,7 @@ export const Suggestion: Command = {
         const content = `Your suggestion will be taken into consideration.`;
         const text = interaction.options.get("text")?.value;
         if (!text || typeof text !== "string") {
-            await interaction.followUp({ content: "You must provide text to suggest." });
+            await interaction.reply({ content: "You must provide text to suggest." });
             return;
         }
 
@@ -33,9 +33,9 @@ export const Suggestion: Command = {
             guild: interaction.guildId
         })
 
-        await interaction.followUp({
-            ephemeral: true,
-            content
+        await interaction.reply({
+            content,
+            ephemeral: true
         });
     }
 }; 

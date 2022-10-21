@@ -15,24 +15,25 @@ export const Suggestions: Command = {
     defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
     run: async (client: Client, interaction: CommandInteraction) => {
         if (!interaction.guildId) {
-            await interaction.followUp({ content: 'An error has occurred' });
+            await interaction.reply({ content: 'An error has occurred' });
             return;
         }
-        const suggestions = await getSuggestions(interaction.guildId);
+        const suggestions = await getSuggestions(interaction.guildId, true);
         if (!suggestions) {
-            await interaction.followUp({
+            await interaction.reply({
                 content: 'An error has occurred',
+                ephemeral: true
             });
             return;
         }
+        console.log(suggestions);
         await interaction.user.send({
             content: `Here are all the suggestions (${interaction.guildId}): ${codeBlock(
                 'yaml',
-                suggestions.join('\n')
+                suggestions.map(x => `${x.createdBy.username}#${x.createdBy.discriminator}: ${x.suggestion}`).join('\n')
             )}`,
-            flags: [64],
         });
-        await interaction.followUp("I've sent you a DM.");
+        await interaction.reply({ content: "I've sent you a DM.", ephemeral: true });
     },
 };
 

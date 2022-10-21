@@ -12,7 +12,7 @@ export const RemoveSuggestion: Command = {
         if (!interaction.guildId || interaction.user.bot) return;
         const suggestions = await getSuggestions(interaction.guildId, true);
         if (!suggestions) {
-            await interaction.followUp({
+            await interaction.reply({
                 content: "An error has occurred",
             });
             return;
@@ -30,7 +30,7 @@ export const RemoveSuggestion: Command = {
                     ));
 
 
-        await interaction.followUp({
+        await interaction.reply({
             content: "Select a suggestion to remove",
             components: [row as any],
             ephemeral: true,
