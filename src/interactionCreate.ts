@@ -1,10 +1,25 @@
 import { CommandInteraction, Client, Interaction } from "discord.js";
 import { Commands } from "./Commands";
+import { handleRemoveSuggestion } from "./commands/RemoveSuggestion";
 
 export default (client: Client): void => {
     client.on("interactionCreate", async (interaction: Interaction) => {
         if (interaction.isCommand() || interaction.isContextMenuCommand()) {
             await handleSlashCommand(client, interaction);
+        }
+        if (interaction.isSelectMenu() && interaction.customId === "remove-suggestion") {
+            try {
+                console.log("Removing suggestion", interaction.values[0]);
+                interaction.values.forEach(async (value) => {
+                    await handleRemoveSuggestion(value);
+                });
+                interaction.update({
+                    content: "Removed suggestion",
+                    components: [],
+                })
+            } catch (e) {
+                console.error("2. Error removing suggestion", e);
+            }
         }
     });
 };

@@ -5,6 +5,7 @@ import {
     MessageFlags,
     PermissionsBitField,
 } from 'discord.js';
+import { stringify } from 'querystring';
 import { Command } from 'src/Command';
 import { db } from '../lib/firebase';
 
@@ -13,35 +14,21 @@ export const Suggestions: Command = {
     description: 'Returns all suggestions',
     defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
     run: async (client: Client, interaction: CommandInteraction) => {
-        const ownerRole = interaction.memberPermissions?.has(
-            PermissionsBitField.Flags.Administrator
-        );
-        if (!interaction.guild?.id) {
+        if (!interaction.guildId) {
             await interaction.followUp({ content: 'An error has occurred' });
             return;
         }
-        if (!ownerRole) {
-            await interaction.user.send({
-                content: "You don't have permissions to this command",
-            });
-            await interaction.deleteReply();
-            return;
-        }
-        const suggestions = await getSuggestions(interaction.guild.id);
+        const suggestions = await getSuggestions(interaction.guildId);
         if (!suggestions) {
             await interaction.followUp({
                 content: 'An error has occurred',
             });
             return;
         }
-        const suggestionsArray = suggestions.docs.map(
-            (s) => s.data().suggestion
-        );
-        console.log(suggestionsArray);
         await interaction.user.send({
-            content: `Here are all the suggestions: ${codeBlock(
-                'json',
-                JSON.stringify(suggestionsArray, null, 2)
+            content: `Here are all the suggestions (${interaction.guildId}): ${codeBlock(
+                'yaml',
+                suggestions.join('\n')
             )}`,
             flags: [64],
         });
@@ -49,14 +36,20 @@ export const Suggestions: Command = {
     },
 };
 
-const getSuggestions = async (id: string) => {
+export const getSuggestions = async (id: string, full = false) => {
     try {
         const suggestions = await db
             .collection('suggestions')
-            .where("guild", "==", id)
+            .where("guild", "==", `${id}`)
+            .where("status", "==", "pending")
             .orderBy('suggestion', 'desc')
             .get();
-        return suggestions;
+
+        const suggestionsArray = suggestions.docs.map(
+            (s) => full ? { ...s.data(), id: s.id } : s.data().suggestion
+        );
+
+        return suggestionsArray;
     } catch (error) {
         console.log(error);
         return null;

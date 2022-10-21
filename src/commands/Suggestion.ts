@@ -29,6 +29,7 @@ export const Suggestion: Command = {
                 discriminator: interaction.user.discriminator
             },
             status: "pending",
+            suggestion: text,
             guild: interaction.guildId
         })
 
