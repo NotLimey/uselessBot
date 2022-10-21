@@ -4,7 +4,7 @@ import { Command } from "../Command";
 
 export const Suggestion: Command = {
     name: "suggestion",
-    description: "Returns a greeting",
+    description: "Adds suggestions to guild suggestions",
     options: [
         {
             name: "text",

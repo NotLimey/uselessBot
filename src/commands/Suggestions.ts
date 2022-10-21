@@ -11,7 +11,7 @@ import { db } from '../lib/firebase';
 
 export const Suggestions: Command = {
     name: 'suggestions',
-    description: 'Returns all suggestions',
+    description: 'Lists all suggestions',
     defaultMemberPermissions: [PermissionsBitField.Flags.Administrator],
     run: async (client: Client, interaction: CommandInteraction) => {
         if (!interaction.guildId) {
@@ -26,7 +26,6 @@ export const Suggestions: Command = {
             });
             return;
         }
-        console.log(suggestions);
         await interaction.user.send({
             content: `Here are all the suggestions (${interaction.guildId}): ${codeBlock(
                 'yaml',

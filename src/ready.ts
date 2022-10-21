@@ -2,7 +2,7 @@
 import { Client } from "discord.js";
 import { Commands } from "./Commands";
 
-export default (client: Client): void => {
+export default (client: Client, onReady?: (client: Client) => void): void => {
     client.on("ready", async () => {
         if (!client.user || !client.application) {
             return;
@@ -10,6 +10,6 @@ export default (client: Client): void => {
 
         await client.application.commands.set(Commands);
 
-        console.log(`${client.user.username} is online`);
+        onReady?.(client);
     });
 }; 
